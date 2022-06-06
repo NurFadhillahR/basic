@@ -1,4 +1,4 @@
-name: Publish Docker Image
+name: Publish DockerImage
 
 on:
   push:
@@ -11,7 +11,7 @@ jobs:
 
   build:
     if: "!contains(github.event.head_commit.message, 'skip ci')"
-    runs-on: ubuntu-latest
+    runs-on: Python 3.10.4
     
     steps:
       - name: Check out
@@ -36,14 +36,14 @@ jobs:
         uses: docker/login-action@v1
         with:
           registry: ghcr.io
-          username: ${{ github.basic_NurFadhillahR }}
+          username: ${{ github.NurFadhillahR }}
           password: ${{ secrets.PW_BASIC }}
           
       - name: Build image
         uses: docker/build-push-action@v2
         with:
           tags: ${{ steps.docker_meta.outputs.tags }} 
-          file: ./Dockerfile
+          file: ./Dockerfile 
           
       - name: Push image
         uses: docker/build-push-action@v2
