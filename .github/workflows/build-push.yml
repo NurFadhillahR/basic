@@ -1,16 +1,16 @@
-name: Publish Docker image
+name: Publish Docker Image
 
 on:
   push:
-    branches: [main]
+    branches: [ main ]
   release:
     types:
-      -published
-      
+      - published
+        
 jobs:
 
   build:
-    if: "|contains(github.event.head_commit.message, 'skip ci')"
+    if: "!contains(github.event.head_commit.message, 'skip ci')"
     runs-on: ubuntu-latest
     
     steps:
@@ -18,40 +18,36 @@ jobs:
         uses: actions/checkout@v2
         
       - name: Docker meta
-        id: docker met
-        uses:  crazy-max/ghaction-docker-met@v1
+        id: docker_meta
+        uses: crazy-max/ghaction-docker-meta@v1
         with:
-          images: ghcr.io/nurfadhillahr/test_basic
+          images: ghcr.io/gbaeke/rgapi
           tag-sha: true
           tag-edge: false
           tag-latest: true
           
-      - name: Set Up QEMU
+      - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
-        
-      - name: Set Up Docker Buildx
+
+      - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
         
       - name: Login to GHCR
         uses: docker/login-action@v1
         with:
           registry: ghcr.io
-          username: ${{NurFadhillahR}}
-          password: ${{secrets.PW_BASIC}}
+          username: ${{ github.NurFadhillahR }}
+          password: ${{ secrets.PW_BASIC }}
           
-      - name: Build Docker image
+      - name: Build image
         uses: docker/build-push-action@v2
-        with: 
-          tags: ${{steps.docker_meta.outputs.tags}}
+        with:
+          tags: ${{ steps.docker_meta.outputs.tags }} 
           file: ./Dockerfile
           
-      - name: Push Docker image
+      - name: Push image
         uses: docker/build-push-action@v2
-       with: 
+        with:
           push: true
-          tags: ${{steps.docker_meta.outputs.tags}}
+          tags: ${{ steps.docker_meta.outputs.tags }}
           file: ./Dockerfile
-          
-          
-          
-      
